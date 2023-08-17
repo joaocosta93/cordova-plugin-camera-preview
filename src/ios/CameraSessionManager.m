@@ -215,12 +215,16 @@
     if (!granted) {
       //Not granted access to mediaType
       dispatch_async(dispatch_get_main_queue(), ^{
-          [[[UIAlertView alloc] initWithTitle:@"Error"
-                                      message:@"Camera permission not found. Please, check your privacy settings."
-                                     delegate:self
-                            cancelButtonTitle:@"OK"
-                            otherButtonTitles:nil] show];
-                            });
+                         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"] message:NSLocalizedString(@"Access to the camera has been prohibited; please enable it in the Settings app to continue.", nil) preferredStyle:UIAlertControllerStyleAlert];
+                         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                             [weakSelf sendNoPermissionResult:command.callbackId];
+                         }]];
+                         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
+                             [weakSelf sendNoPermissionResult:command.callbackId];
+                         }]];
+                         [weakSelf.viewController presentViewController:alertController animated:YES completion:nil];
+                     });
     }
   }];
 }
