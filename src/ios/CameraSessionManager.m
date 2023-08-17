@@ -215,14 +215,12 @@
     if (!granted) {
       //Not granted access to mediaType
       dispatch_async(dispatch_get_main_queue(), ^{
-                         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"] message:NSLocalizedString(@"Access to the camera has been prohibited; please enable it in the Settings app to continue.", nil) preferredStyle:UIAlertControllerStyleAlert];
-                         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                         }]];
-                         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{} completionHandler:nil];
-                         }]];
-                         [self.viewController presentViewController:alertController animated:YES completion:nil];
-                     });
+          [[[UIAlertView alloc] initWithTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]
+                                      message:@"Access to the camera has been prohibited; please enable it in the Settings app to continue."
+                                     delegate:self
+                            cancelButtonTitle:@"OK"
+                            otherButtonTitles:nil] show];
+                            });
     }
   }];
 }
